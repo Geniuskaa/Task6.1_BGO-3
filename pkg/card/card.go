@@ -282,7 +282,6 @@ func (c *Card)MonthlySpendingsMutex2(goroutines int) map[string]int64 { // бе�
 			go func() {
 				mu.Lock()
 				for _, value := range part {
-
 					mcc[value.MCC] += value.Amount
 				}
 				mu.Unlock()

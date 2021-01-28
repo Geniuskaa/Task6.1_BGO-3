@@ -223,3 +223,103 @@ func TestMonthlySpendings(t *testing.T) {
 	}
 }
 
+func BenchmarkMonthlySpendings(b *testing.B) {
+	transactions := makeTransactions()
+	want := map[string]int64{
+		"5050": 2_000_000,
+		"5090": 2_000_000,
+		"5060": 2_000_000,
+		"5105": 194_000_000,
+	}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		result := MonthlySpendings(transactions)
+		b.StopTimer() // останавливаем таймер, чтобы время сравнения не учитывалось
+		if !reflect.DeepEqual(result, want) {
+			b.Fatalf("invalid result, got %v, want %v", result, want)
+		}
+		b.StartTimer()
+	}
+}
+
+func BenchmarkMonthlySpendingsMutex(b *testing.B) {
+	card := &Card{
+		Id:           0,
+		Issuer:       "VISA",
+		Currency:     "RUB",
+		Balance:      134_324_00,
+		Number:       "4263 2462 2361 9682",
+		Transactions: makeTransactions(),
+	}
+	want := map[string]int64{
+		"5050": 2_000_000,
+		"5090": 2_000_000,
+		"5060": 2_000_000,
+		"5105": 194_000_000,
+	}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		result := card.MonthlySpendingsMutex(5)
+		b.StopTimer() // останавливаем таймер, чтобы время сравнения не учитывалось
+		if !reflect.DeepEqual(result, want) {
+			b.Fatalf("invalid result, got %v, want %v", result, want)
+		}
+		b.StartTimer()
+	}
+}
+
+
+func BenchmarkMonthlySpendingsChanels(b *testing.B) {
+	card := &Card{
+		Id:           0,
+		Issuer:       "VISA",
+		Currency:     "RUB",
+		Balance:      134_324_00,
+		Number:       "4263 2462 2361 9682",
+		Transactions: makeTransactions(),
+	}
+	want := map[string]int64{
+		"5050": 2_000_000,
+		"5090": 2_000_000,
+		"5060": 2_000_000,
+		"5105": 194_000_000,
+	}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		result := card.MonthlySpendingsChanels(5)
+		b.StopTimer() // останавливаем таймер, чтобы время сравнения не учитывалось
+		if !reflect.DeepEqual(result, want) {
+			b.Fatalf("invalid result, got %v, want %v", result, want)
+		}
+		b.StartTimer()
+	}
+}
+
+
+func BenchmarkMonthlySpendingsMutex2(b *testing.B) {
+	card := &Card{
+		Id:           0,
+		Issuer:       "VISA",
+		Currency:     "RUB",
+		Balance:      134_324_00,
+		Number:       "4263 2462 2361 9682",
+		Transactions: makeTransactions(),
+	}
+	want := map[string]int64{
+		"5050": 2_000_000,
+		"5090": 2_000_000,
+		"5060": 2_000_000,
+		"5105": 194_000_000,
+	}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		result := card.MonthlySpendingsMutex2(5)
+		b.StopTimer() // останавливаем таймер, чтобы время сравнения не учитывалось
+		if !reflect.DeepEqual(result, want) {
+			b.Fatalf("invalid result, got %v, want %v", result, want)
+		}
+		b.StartTimer()
+	}
+}
+
+
