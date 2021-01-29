@@ -77,7 +77,7 @@ func main() {
 	card.PrintMapOfMCC(m)
 	fmt.Println("")
 
-	m1 := bank.StoreOfCards[0].MonthlySpendingsMutex(5)
+	m1 := bank.StoreOfCards[0].MonthlySpendingsMutex(6)
 	card.PrintMapOfMCC(m1)
 	fmt.Println("")
 

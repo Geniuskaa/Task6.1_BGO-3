@@ -166,23 +166,6 @@ func (c *Card) MonthlySpendingsMutex(goroutines int) map[string]int64 {
 		"5105": 0,
 		"5060": 0,
 	}
-	if len(c.Transactions) % goroutines == 0 {
-		partSize := len(c.Transactions) / goroutines
-		for i := 0; i < goroutines; i++ {
-			part := c.Transactions[i*partSize : (i+1)*partSize]
-			go func() {
-				pieceMCC := MonthlySpendings(part)
-				mu.Lock()
-				for key, value := range pieceMCC {
-					mcc[key] += value
-				}
-				mu.Unlock()
-				wg.Done()
-			}()
-		}
-		wg.Wait()
-		return mcc
-	}
 	partSize := len(c.Transactions) / goroutines
 	for i := 0; i < goroutines; i++ {
 		part := c.Transactions[i*partSize : (i+1)*partSize]
@@ -213,26 +196,6 @@ func (c *Card)MonthlySpendingsChanels(goroutines int) map[string]int64 {
 		"5060": 0,
 	}
 	result := make(chan map[string]int64)
-	if len(c.Transactions) % goroutines == 0 {
-		partSize := len(c.Transactions) / goroutines
-		for i := 0; i < goroutines; i++ {
-			part := c.Transactions[i*partSize : (i+1)*partSize]
-			monthlySpendings(part, result)
-		}
-
-		finished := 0
-		for value := range result {
-			for key, value2 := range value {
-				mcc[key] += value2
-			}
-			finished++
-			if finished == goroutines {
-				close(result)
-				break
-			}
-		}
-		return mcc
-	}
 	partSize := len(c.Transactions) / goroutines
 	for i := 0; i < goroutines; i++ {
 		part := c.Transactions[i*partSize : (i+1)*partSize]
@@ -272,22 +235,6 @@ func (c *Card)MonthlySpendingsMutex2(goroutines int) map[string]int64 { // бе�
 		"5090": 0,
 		"5105": 0,
 		"5060": 0,
-	}
-	if len(c.Transactions) % goroutines == 0 {
-		partSize := len(c.Transactions) / goroutines
-		for i := 0; i < goroutines; i++ {
-			part := c.Transactions[i*partSize : (i+1)*partSize]
-			go func() {
-				mu.Lock()
-				for _, value := range part {
-					mcc[value.MCC] += value.Amount
-				}
-				mu.Unlock()
-				wg.Done()
-			}()
-		}
-		wg.Wait()
-		return mcc
 	}
 	partSize := len(c.Transactions) / goroutines
 	for i := 0; i < goroutines; i++ {
