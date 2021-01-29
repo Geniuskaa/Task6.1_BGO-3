@@ -53,6 +53,7 @@ func main() {
 	transfers.Purchase(746, 0, "5060", time.Date(2021,3,14,6,0,0,0, time.Local))
 	transfers.Purchase(2_546, 0, "5090", time.Date(2021,3,4,6,0,0,0, time.Local))
 	transfers.Purchase(73_416, 0, "5050", time.Date(2021,4,14,6,0,0,0, time.Local))
+	transfers.Purchase(713_416, 0, "5090", time.Date(2021,4,14,6,0,0,0, time.Local))
 
 
 	//for _, sample := range bank.StoreOfCards[0].Transactions {
@@ -70,6 +71,7 @@ func main() {
 
 	bank.StoreOfCards[0].SumConcurrently(5, time.Date(2021,1,1,0,0,0,0, time.Local), time.Date(2021,5,1,0, 0,0,0, time.Local))
 
+	fmt.Println("Длина слайса: ", len(bank.StoreOfCards[0].Transactions))
 	fmt.Println("")
 	m := card.MonthlySpendings(bank.StoreOfCards[0].Transactions)
 	card.PrintMapOfMCC(m)

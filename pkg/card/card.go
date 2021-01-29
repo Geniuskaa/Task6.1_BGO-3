@@ -197,12 +197,10 @@ func (c *Card) MonthlySpendingsMutex(goroutines int) map[string]int64 {
 		}()
 	}
 	lastPiece := MonthlySpendings(c.Transactions[goroutines*partSize : ])
-	mu.Lock()
+	wg.Wait()
 	for key, value := range lastPiece {
 		mcc[key] += value
 	}
-	mu.Unlock()
-	wg.Wait()
 	return mcc
 }
 
@@ -303,12 +301,11 @@ func (c *Card)MonthlySpendingsMutex2(goroutines int) map[string]int64 { // бе�
 			wg.Done()
 		}()
 	}
-	mu.Lock()
+
+	wg.Wait()
 	for _, value := range c.Transactions[goroutines*partSize : ] {
 		mcc[value.MCC] += value.Amount
 	}
-	mu.Unlock()
-	wg.Wait()
 	return mcc
 }
 
